@@ -6,7 +6,6 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart' hide ChatState;
 import 'package:linkedin_writer/blocs/chat/chat_bloc.dart';
 import 'package:linkedin_writer/blocs/chat/chat_event.dart';
 import 'package:linkedin_writer/blocs/chat/chat_state.dart';
-import 'package:linkedin_writer/config/constants.dart';
 import 'package:linkedin_writer/config/theme.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -17,21 +16,10 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final TextEditingController _textController = TextEditingController();
-
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppConstants.appName),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('LinkedIn Post Writer'), centerTitle: true),
       body: BlocConsumer<ChatBloc, ChatState>(
         listener: (context, state) {
           if (state.status == ChatStatus.error && state.errorMessage != null) {
@@ -44,16 +32,12 @@ class _ChatScreenState extends State<ChatScreen> {
           }
         },
         builder: (context, state) {
-          final messages = state.messages
-              .map((msg) => msg.toChatUiMessage())
-              .toList()
-              .reversed
-              .toList();
+          final messages =
+              state.messages.map((msg) => msg.toChatUiMessage()).toList().reversed.toList();
 
           return Column(
             children: [
-              if (state.status == ChatStatus.loading)
-                const LinearProgressIndicator(),
+              if (state.status == ChatStatus.loading) const LinearProgressIndicator(),
               Expanded(
                 child: Chat(
                   messages: messages,
@@ -66,13 +50,11 @@ class _ChatScreenState extends State<ChatScreen> {
                     primaryColor: AppTheme.linkedinBlue,
                     secondaryColor: Colors.white,
                     inputBackgroundColor: Colors.white,
-                    sentMessageBodyTextStyle:
-                        const TextStyle(color: Colors.white),
-                    receivedMessageBodyTextStyle:
-                        const TextStyle(color: Colors.black87),
+                    sentMessageBodyTextStyle: const TextStyle(color: Colors.white),
+                    receivedMessageBodyTextStyle: const TextStyle(color: Colors.black87),
                     inputTextStyle: const TextStyle(color: Colors.black87),
                   ),
-                  customBottomWidget: _buildInputField(context),
+                  customBottomWidget: const ChatInputField(),
                 ),
               ),
             ],
@@ -81,8 +63,40 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
+}
 
-  Widget _buildInputField(BuildContext context) {
+class ChatInputField extends StatefulWidget {
+  const ChatInputField({super.key});
+
+  @override
+  State<ChatInputField> createState() => _ChatInputFieldState();
+}
+
+class _ChatInputFieldState extends State<ChatInputField> {
+  late final TextEditingController _textController;
+
+  @override
+  void initState() {
+    super.initState();
+    _textController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  void _sendMessage() {
+    final text = _textController.text;
+    if (text.trim().isNotEmpty) {
+      context.read<ChatBloc>().add(SendMessage(text));
+      _textController.clear();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: Colors.white,
@@ -100,61 +114,37 @@ class _ChatScreenState extends State<ChatScreen> {
                       return;
                     } else {
                       // Send message with Enter
-                      final text = _textController.text;
-                      if (text.trim().isNotEmpty) {
-                        context.read<ChatBloc>().add(SendMessage(text));
-                        _textController.clear();
-                      }
+                      _sendMessage();
                     }
                   }
                 }
               },
               child: TextField(
-              controller: _textController,
-              decoration: InputDecoration(
-                hintText: 'What would you like to post about?',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
-                  borderSide: BorderSide.none,
+                controller: _textController,
+                decoration: InputDecoration(
+                  hintText: 'What would you like to post about?',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: AppTheme.linkedinLightGray,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
-                filled: true,
-                fillColor: AppTheme.linkedinLightGray,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
+                textCapitalization: TextCapitalization.sentences,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                textInputAction: TextInputAction.newline,
+                onSubmitted: (_) => _sendMessage(),
+                onEditingComplete: _sendMessage,
               ),
-              textCapitalization: TextCapitalization.sentences,
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              textInputAction: TextInputAction.newline,
-              onSubmitted: (text) {
-                if (text.trim().isNotEmpty) {
-                  context.read<ChatBloc>().add(SendMessage(text));
-                  _textController.clear();
-                }
-              },
-              onEditingComplete: () {
-                final text = _textController.text;
-                if (text.trim().isNotEmpty) {
-                  context.read<ChatBloc>().add(SendMessage(text));
-                  _textController.clear();
-                }
-              },
-            ),
             ),
           ),
           const SizedBox(width: 8),
           IconButton(
+            onPressed: _sendMessage,
             icon: const Icon(Icons.send),
             color: AppTheme.linkedinBlue,
-            onPressed: () {
-              final text = _textController.text;
-              if (text.trim().isNotEmpty) {
-                context.read<ChatBloc>().add(SendMessage(text));
-                _textController.clear();
-              }
-            },
           ),
         ],
       ),
