@@ -45,5 +45,4 @@ app.*.map.json
 /android/app/release
 
 # API Key file
-lib/config/api_key.dart
-.windsurfruleslib/app/core/constants/api_key.dart
+lib/app/core/config/api_key.dart
