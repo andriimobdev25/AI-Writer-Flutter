@@ -34,7 +34,7 @@ A Flutter web application that helps users write engaging LinkedIn posts using O
    ```
 
 3. Set up your OpenAI API key:
-   - Copy `lib/config/api_key.template.dart` to `lib/config/api_key.dart`
+   - Copy `lib/app/core/constants/api_key.template.dart` to `lib/app/core/constants/api_key.dart`
    - Replace `'your-api-key-here'` with your actual OpenAI API key
 
 4. Run the application:
@@ -54,12 +54,30 @@ A Flutter web application that helps users write engaging LinkedIn posts using O
 
 ```
 lib/
-├── blocs/          # BLoC pattern implementation
-├── config/         # Configuration files
-├── models/         # Data models
-├── screens/        # UI screens
-└── services/       # Business logic and API services
+├── app/
+│   ├── core/                # Shared core functionality
+│   │   ├── models/          # Base models
+│   │   ├── utils/           # Utility functions
+│   │   └── constants/       # App constants
+│   ├── features/            # Application features
+│   │   └── chat/           # Chat feature module
+│   │       ├── data/       # Data layer (sources: local/remote)
+│   │       ├── domain/     # Business logic (repositories/entities)
+│   │       └── presentation/ # UI layer (bloc/pages/widgets)
+│   └── widgets/            # Shared widgets
+└── main.dart               # Application entry point
 ```
+
+### Clean Architecture
+
+The project follows clean architecture principles:
+
+1. **Core Layer**: Contains shared functionality, models, and utilities used across features
+2. **Feature Modules**: Each feature (like chat) is isolated and follows clean architecture:
+   - **Data Layer**: Handles data operations and external services
+   - **Domain Layer**: Contains business logic and entities
+   - **Presentation Layer**: Manages UI components and state
+3. **Dependency Rule**: Dependencies point inward, with the domain layer having no dependencies on outer layers
 
 ## Contributing
 
