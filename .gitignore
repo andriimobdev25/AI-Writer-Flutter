@@ -46,3 +46,4 @@ app.*.map.json
 
 # API Key file
 lib/config/api_key.dart
+.windsurfrules

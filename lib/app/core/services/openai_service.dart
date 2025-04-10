@@ -1,5 +1,5 @@
 import 'package:dart_openai/dart_openai.dart';
-import 'package:linkedin_writer/config/api_key.dart';
+import 'package:linkedin_writer/app/core/config/api_key.dart';
 
 class OpenAIService {
   late final OpenAI _openAI;

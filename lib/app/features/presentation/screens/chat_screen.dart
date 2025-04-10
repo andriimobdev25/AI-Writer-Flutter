@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart' hide ChatState;
-import 'package:linkedin_writer/blocs/chat/chat_bloc.dart';
-import 'package:linkedin_writer/blocs/chat/chat_event.dart';
-import 'package:linkedin_writer/blocs/chat/chat_state.dart';
-import 'package:linkedin_writer/config/theme.dart';
+import 'package:linkedin_writer/app/features/presentation/blocs/chat/chat_bloc.dart';
+import 'package:linkedin_writer/app/features/presentation/blocs/chat/chat_event.dart';
+import 'package:linkedin_writer/app/features/presentation/blocs/chat/chat_state.dart';
+import 'package:linkedin_writer/app/core/config/theme.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
