@@ -1,23 +1,106 @@
 import 'package:dart_openai/dart_openai.dart';
 import 'package:linkedin_writer/app/core/config/api_key.dart';
 
+import 'token_usage_limiter.dart';
+
 class OpenAIService {
+  void clearConversation() {
+    _conversationHistory.clear();
+  }
+
   late final OpenAI _openAI;
+  final _tokenLimiter = TokenUsageLimiter();
+  static const _maxHistoryMessages = 4; // Keep last 2 exchanges
+  final List<OpenAIChatCompletionChoiceMessageModel> _conversationHistory = [];
 
   OpenAIService() {
     OpenAI.apiKey = ApiKey.openAiKey;
     _openAI = OpenAI.instance;
   }
 
-  Future<String> generateLinkedInPost(String topic) async {
+  Future<String> generateLinkedInPost(String input) async {
+    // Trim history if it's too long
+    if (_conversationHistory.length > _maxHistoryMessages) {
+      _conversationHistory.removeRange(0, _conversationHistory.length - _maxHistoryMessages);
+    }
+
+    // Estimate tokens for the input (topic + system prompt + recent history)
+    final historyText = _conversationHistory.map((msg) => msg.content?.first.text ?? '').join(' ');
+    final estimatedInputTokens = _tokenLimiter.estimateTokens(_systemPrompt + input + historyText);
+    final maxTokens = 250; // Match maxTokens setting
+
+    // Check if we have enough tokens
+    if (!await _tokenLimiter.canUseTokens(estimatedInputTokens + maxTokens)) {
+      throw Exception('Daily token limit reached. Please try again tomorrow.');
+    }
+
     try {
+      final messages = [
+        OpenAIChatCompletionChoiceMessageModel(
+          role: OpenAIChatMessageRole.system,
+          content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(_systemPrompt)],
+        ),
+        ..._conversationHistory,
+        OpenAIChatCompletionChoiceMessageModel(
+          role: OpenAIChatMessageRole.user,
+          content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(input)],
+        ),
+      ];
+
       final chatCompletion = await _openAI.chat.create(
-        model: 'gpt-4',
-        messages: [
-          OpenAIChatCompletionChoiceMessageModel(
-            role: OpenAIChatMessageRole.system,
-            content: [
-              OpenAIChatCompletionChoiceMessageContentItemModel.text('''
+        model: 'gpt-4o',
+        temperature: 1.1,
+        messages: messages,
+        maxTokens: maxTokens,
+      );
+
+      if (chatCompletion.choices.isEmpty) {
+        throw Exception('No response from OpenAI');
+      }
+
+      final content = chatCompletion.choices.first.message.content;
+      if (content == null || content.isEmpty) {
+        throw Exception('Empty response from OpenAI');
+      }
+
+      // Record actual token usage
+      await _tokenLimiter.recordTokenUsage(
+        chatCompletion.usage.promptTokens,
+        chatCompletion.usage.completionTokens,
+      );
+
+      final responseText = content.first.text ?? '';
+
+      // Add the user's message and AI's response to history
+      _conversationHistory.add(
+        OpenAIChatCompletionChoiceMessageModel(
+          role: OpenAIChatMessageRole.user,
+          content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(input)],
+        ),
+      );
+      _conversationHistory.add(
+        OpenAIChatCompletionChoiceMessageModel(
+          role: OpenAIChatMessageRole.assistant,
+          content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(responseText)],
+        ),
+      );
+      return responseText;
+    } catch (e) {
+      throw Exception('Failed to generate post: ${e.toString()}');
+    }
+  }
+
+  Future<int> getRemainingTokens() async {
+    return _tokenLimiter.getRemainingTokens();
+  }
+
+  // Development only: Reset token count
+  Future<void> resetTokens() async {
+    await _tokenLimiter.resetTokens();
+  }
+}
+
+final _systemPrompt = '''
 You are an AI assistant trained to generate LinkedIn posts in a concise, engaging, action-driven, and community-focused style with a professional yet friendly tone. Follow these strict guidelines:
 
 ⸻
@@ -45,8 +128,9 @@ Never generate posts without first digesting and understanding the source materi
 	•	Assume a technically savvy audience—avoid basic explanations.
 	•	Use 1–3 emojis.
 
-3. Call to Action (1 sentence)
-	•	Use the 🔗 emoji before links.
+3. Call to Action "cta" (1 sentence)
+  •	If there is no link provided, ask the user if you should include a cta or not, if "yes" ask him for the link and follow the remaining cta instructions, if "No" then don't include a cta.
+  •	Use the 🔗 emoji before links.
 	•	Encourage readers to open the link (e.g., “If clean and scalable state management is a priority, this is for you:” or “This guide compiles the best practices from multiple sources into an easy-to-follow breakdown:”)
 
 4. Hashtags (2–4 per post)
@@ -72,32 +156,8 @@ Never generate posts without first digesting and understanding the source materi
 ⸻
 
 5. Collaboration Guidelines:
-	•	If additional information is needed to clarify the topic, ask the user for more details.
-	•	Offer the generated post and ask the user for any changes they’d like to make.
-	•	Continue iterating on the post until the user confirms they’re fully satisfied.
-'''),
-            ],
-          ),
-          OpenAIChatCompletionChoiceMessageModel(
-            role: OpenAIChatMessageRole.user,
-            content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(topic)],
-          ),
-        ],
-        temperature: 1.1,
-      );
-
-      if (chatCompletion.choices.isEmpty) {
-        throw Exception('No response from OpenAI');
-      }
-
-      final content = chatCompletion.choices.first.message.content;
-      if (content == null || content.isEmpty) {
-        throw Exception('Empty response from OpenAI');
-      }
-
-      return content.first.text ?? '';
-    } catch (e) {
-      throw Exception('Failed to generate post: ${e.toString()}');
-    }
-  }
-}
+  •	Greet the user and offer your services at first.
+  •	If additional information is needed to clarify the topic, ask the user for more details.
+  •	After each post generated verify with the user that he is satisfied with this version and no further changes are needed.
+  •	Continue iterating on the post until the user confirms they’re fully satisfied.
+''';

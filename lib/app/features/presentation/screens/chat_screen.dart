@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart' hide ChatState;
+import 'package:linkedin_writer/app/core/config/theme.dart';
 import 'package:linkedin_writer/app/features/presentation/blocs/chat/chat_bloc.dart';
 import 'package:linkedin_writer/app/features/presentation/blocs/chat/chat_event.dart';
 import 'package:linkedin_writer/app/features/presentation/blocs/chat/chat_state.dart';
-import 'package:linkedin_writer/app/core/config/theme.dart';
+
+import '../widgets/token_counter.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -19,7 +20,29 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('LinkedIn Post Writer'), centerTitle: true),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
+        leading: Padding(padding: const EdgeInsets.only(left: 10), child: TokenCounter()),
+        title: const Text('LinkedIn Post Writer'),
+        leadingWidth: 200,
+        centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: TextButton(
+                child: Text('New post', style: TextStyle(color: Colors.white)),
+                onPressed: () => context.read<ChatBloc>().add(const ResetChat()),
+              ),
+            ),
+          ),
+        ],
+      ),
       body: BlocConsumer<ChatBloc, ChatState>(
         listener: (context, state) {
           if (state.status == ChatStatus.error && state.errorMessage != null) {
@@ -92,6 +115,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
     if (text.trim().isNotEmpty) {
       context.read<ChatBloc>().add(SendMessage(text));
       _textController.clear();
+      // Keep cursor at the start for next message
     }
   }
 
@@ -103,41 +127,24 @@ class _ChatInputFieldState extends State<ChatInputField> {
       child: Row(
         children: [
           Expanded(
-            child: KeyboardListener(
-              focusNode: FocusNode(),
-              onKeyEvent: (event) {
-                if (event is KeyDownEvent) {
-                  if (event.logicalKey == LogicalKeyboardKey.enter ||
-                      event.logicalKey == LogicalKeyboardKey.numpadEnter) {
-                    if (HardwareKeyboard.instance.isShiftPressed) {
-                      // Allow new line with Shift+Enter
-                      return;
-                    } else {
-                      // Send message with Enter
-                      _sendMessage();
-                    }
-                  }
-                }
-              },
-              child: TextField(
-                controller: _textController,
-                decoration: InputDecoration(
-                  hintText: 'What would you like to post about?',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24),
-                    borderSide: BorderSide.none,
-                  ),
-                  filled: true,
-                  fillColor: AppTheme.linkedinLightGray,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: TextField(
+              controller: _textController,
+              decoration: InputDecoration(
+                hintText: 'What would you like to post about?',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide.none,
                 ),
-                textCapitalization: TextCapitalization.sentences,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                textInputAction: TextInputAction.newline,
-                onSubmitted: (_) => _sendMessage(),
-                onEditingComplete: _sendMessage,
+                filled: true,
+                fillColor: AppTheme.linkedinLightGray,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               ),
+              textCapitalization: TextCapitalization.sentences,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              textInputAction: TextInputAction.none,
+              onEditingComplete: _sendMessage,
+              onSubmitted: (_) {},
             ),
           ),
           const SizedBox(width: 8),
