@@ -3,8 +3,13 @@
     "short_name": "linkedin_writer",
     "start_url": ".",
     "display": "standalone",
+<<<<<<< HEAD
     "background_color": "#0077B5",
     "theme_color": "#0077B5",
+=======
+    "background_color": "#0175C2",
+    "theme_color": "#0175C2",
+>>>>>>> db478cfc508779c2a50c28bc20ebe1dd1eb3ce9f
     "description": "A new Flutter project.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
@@ -32,4 +37,8 @@
             "purpose": "maskable"
         }
     ]
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> db478cfc508779c2a50c28bc20ebe1dd1eb3ce9f
