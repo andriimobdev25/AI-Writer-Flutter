@@ -17,6 +17,22 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    // Focus on the text field when the screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +93,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     receivedMessageBodyTextStyle: const TextStyle(color: Colors.black87),
                     inputTextStyle: const TextStyle(color: Colors.black87),
                   ),
-                  customBottomWidget: const ChatInputField(),
+                  customBottomWidget: ChatInputField(focusNode: _focusNode),
                 ),
               ),
             ],
@@ -89,7 +105,8 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class ChatInputField extends StatefulWidget {
-  const ChatInputField({super.key});
+  final FocusNode focusNode;
+  const ChatInputField({super.key, required this.focusNode});
 
   @override
   State<ChatInputField> createState() => _ChatInputFieldState();
@@ -128,6 +145,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
         children: [
           Expanded(
             child: TextField(
+              focusNode: widget.focusNode,
               controller: _textController,
               decoration: InputDecoration(
                 hintText: 'What would you like to post about?',
@@ -144,7 +162,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
               maxLines: null,
               textInputAction: TextInputAction.none,
               onEditingComplete: _sendMessage,
-              onSubmitted: (_) {},
+              onSubmitted: (_) => _sendMessage(),
             ),
           ),
           const SizedBox(width: 8),
