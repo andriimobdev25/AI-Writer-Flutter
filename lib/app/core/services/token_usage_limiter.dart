@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'storage/storage_provider.dart';
 
 class TokenUsageLimiter {
-  static const int _maxTokensPerDay = 10000; // Daily token limit
+  static const int _maxTokensPerDay = 20000; // Daily token limit
   static const String _keyDailyTokens = 'daily_token_usage';
   static const String _keyLastReset = 'last_token_reset';
 
