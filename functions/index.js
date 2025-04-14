@@ -12,17 +12,56 @@ exports.generateLinkedInPost = onRequest({
   memory: "1GiB",
   region: "us-central1",
   cors: true,
-  maxInstances: 10
+  maxInstances: 10,
+  minInstances: 0,
+  invoker: 'public',  // Restrict to authenticated users if needed
+  concurrency: 100,   // Maximum concurrent executions
+  rateLimit: {
+    maxConcurrent: 50,  // Maximum concurrent requests per user/IP
+    periodSeconds: 60   // Time window for rate limiting
+  }
 }, async (req, res) => {
+  // Validate request method
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  // Validate content type
+  if (!req.headers['content-type']?.includes('application/json')) {
+    res.status(400).json({ error: 'Invalid content type' });
+    return;
+  }
   try {
     const { input, systemPrompt } = req.body;
     
-    if (!input || !systemPrompt) {
+    // Input validation
+    if (!input || typeof input !== 'string') {
+      res.status(400).json({ error: 'Invalid input' });
+      return;
+    }
+
+    if (!systemPrompt || typeof systemPrompt !== 'string') {
+      res.status(400).json({ error: 'Invalid system prompt' });
+      return;
+    }
+
+    // Sanitize input
+    const sanitizedInput = input.trim();
+    const sanitizedSystemPrompt = systemPrompt.trim();
+
+    if (!sanitizedInput || !sanitizedSystemPrompt) {
       res.status(400).json({ error: "Missing input or systemPrompt" });
       return;
     }
 
-    const chatCompletion = await openai.chat.completions.create({
+    // Add request timeout
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Request timeout')), 25000);
+    });
+
+    const chatCompletion = await Promise.race([
+      openai.chat.completions.create({
       model: "gpt-4o",
       temperature: 1.1,
       messages: [
@@ -35,8 +74,13 @@ exports.generateLinkedInPost = onRequest({
           content: input
         }
       ],
-      max_tokens: 250
-    });
+      max_tokens: 250,
+      user: req.headers['x-forwarded-for'] || req.ip, // Track requests by IP
+      presence_penalty: 0.6,
+      frequency_penalty: 0.5
+    }),
+    timeoutPromise
+  ]);
 
     if (!chatCompletion.choices || chatCompletion.choices.length === 0) {
       res.status(500).json({ error: "No response from OpenAI" });
