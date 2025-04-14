@@ -1,4 +1,4 @@
-# LinkedIn Post Writer
+# LinkedIn Writer
 
 A Flutter web application that helps users write engaging LinkedIn posts using GPT-4.
 

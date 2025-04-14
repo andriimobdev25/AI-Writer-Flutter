@@ -21,11 +21,11 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        leadingWidth: 200,
+        title: const Text('LinkedIn Writer'),
         backgroundColor: Theme.of(context).primaryColor,
         leading: Padding(padding: const EdgeInsets.only(left: 10), child: TokenCounter()),
-        title: const Text('LinkedIn Post Writer'),
-        leadingWidth: 200,
-        centerTitle: true,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10),
