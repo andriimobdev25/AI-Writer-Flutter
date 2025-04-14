@@ -1,5 +1,6 @@
-import 'package:dart_openai/dart_openai.dart';
-import 'package:linkedin_writer/app/core/config/api_key.dart';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 
 import 'token_usage_limiter.dart';
 
@@ -8,15 +9,10 @@ class OpenAIService {
     _conversationHistory.clear();
   }
 
-  late final OpenAI _openAI;
   final _tokenLimiter = TokenUsageLimiter();
   static const _maxHistoryMessages = 4; // Keep last 2 exchanges
-  final List<OpenAIChatCompletionChoiceMessageModel> _conversationHistory = [];
-
-  OpenAIService() {
-    OpenAI.apiKey = ApiKey.openAiKey;
-    _openAI = OpenAI.instance;
-  }
+  final List<Map<String, dynamic>> _conversationHistory = [];
+  static const _functionUrl = 'https://generatelinkedinpost-teg6lq3miq-uc.a.run.app';
 
   Future<String> generateLinkedInPost(String input) async {
     // Trim history if it's too long
@@ -25,7 +21,7 @@ class OpenAIService {
     }
 
     // Estimate tokens for the input (topic + system prompt + recent history)
-    final historyText = _conversationHistory.map((msg) => msg.content?.first.text ?? '').join(' ');
+    final historyText = _conversationHistory.map((msg) => msg['content'] as String).join(' ');
     final estimatedInputTokens = _tokenLimiter.estimateTokens(_systemPrompt + input + historyText);
     final maxTokens = 250; // Match maxTokens setting
 
@@ -35,55 +31,30 @@ class OpenAIService {
     }
 
     try {
-      final messages = [
-        OpenAIChatCompletionChoiceMessageModel(
-          role: OpenAIChatMessageRole.system,
-          content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(_systemPrompt)],
-        ),
-        ..._conversationHistory,
-        OpenAIChatCompletionChoiceMessageModel(
-          role: OpenAIChatMessageRole.user,
-          content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(input)],
-        ),
-      ];
-
-      final chatCompletion = await _openAI.chat.create(
-        model: 'gpt-4o',
-        temperature: 1.1,
-        messages: messages,
-        maxTokens: maxTokens,
+      final response = await http.post(
+        Uri.parse(_functionUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'input': input, 'systemPrompt': _systemPrompt}),
       );
 
-      if (chatCompletion.choices.isEmpty) {
-        throw Exception('No response from OpenAI');
+      if (response.statusCode != 200) {
+        throw Exception('Failed to generate post: ${response.body}');
       }
 
-      final content = chatCompletion.choices.first.message.content;
-      if (content == null || content.isEmpty) {
-        throw Exception('Empty response from OpenAI');
-      }
+      final data = jsonDecode(response.body);
+      final responseText = data['text'] as String;
+      final usage = data['usage'] as Map<String, dynamic>;
 
       // Record actual token usage
       await _tokenLimiter.recordTokenUsage(
-        chatCompletion.usage.promptTokens,
-        chatCompletion.usage.completionTokens,
+        usage['prompt_tokens'] as int,
+        usage['completion_tokens'] as int,
       );
-
-      final responseText = content.first.text ?? '';
 
       // Add the user's message and AI's response to history
-      _conversationHistory.add(
-        OpenAIChatCompletionChoiceMessageModel(
-          role: OpenAIChatMessageRole.user,
-          content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(input)],
-        ),
-      );
-      _conversationHistory.add(
-        OpenAIChatCompletionChoiceMessageModel(
-          role: OpenAIChatMessageRole.assistant,
-          content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(responseText)],
-        ),
-      );
+      _conversationHistory.add({'role': 'user', 'content': input});
+      _conversationHistory.add({'role': 'assistant', 'content': responseText});
+
       return responseText;
     } catch (e) {
       throw Exception('Failed to generate post: ${e.toString()}');
