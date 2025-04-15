@@ -20,6 +20,19 @@ A Flutter web application that helps users write engaging LinkedIn posts using G
 
 ## Setup Instructions
 
+### Sentry Error Tracking (Production)
+
+This project uses [Sentry](https://sentry.io/) to track errors in production builds.
+
+**Setup:**
+1. Create a Sentry account and a new project for Flutter.
+2. Copy your Sentry DSN.
+3. Open `lib/app/core/config/sentry_config.dart` and replace `YOUR_SENTRY_DSN_HERE` with your actual DSN string.
+   - **Do NOT commit real DSNs to public repositories.**
+4. Sentry is automatically initialized in `main.dart` for production builds.
+
+For more details, see the [Sentry Flutter docs](https://docs.sentry.io/platforms/flutter/).
+
 ### 1. Clone the Repository
 
 ```bash
