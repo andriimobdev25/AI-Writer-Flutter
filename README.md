@@ -1,11 +1,11 @@
 # LinkedIn Writer
 
-A Flutter web application that helps users write engaging LinkedIn posts using GPT-4.
+A Flutter web application that helps users write engaging LinkedIn posts using GPT-4o.
 
 ## Features
 
 - 💬 **Chat Interface**: User-friendly chat UI for seamless interaction
-- 🤖 **GPT-4 Integration**: Leverages OpenAI's powerful language model
+- 🤖 **GPT-4o Integration**: Leverages OpenAI's powerful language model
 - 📊 **Token Usage Tracking**: Monitor your API usage
 - 🔒 **Secure API Management**: Firebase Functions for secure API calls
 - 📱 **Responsive Layout**: Works on both desktop and mobile browsers
