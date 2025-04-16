@@ -33,25 +33,11 @@ exports.generateLinkedInPost = onRequest({
     return;
   }
   try {
-    const { input, systemPrompt } = req.body;
+    const { messages } = req.body;
     
-    // Input validation
-    if (!input || typeof input !== 'string') {
-      res.status(400).json({ error: 'Invalid input' });
-      return;
-    }
-
-    if (!systemPrompt || typeof systemPrompt !== 'string') {
-      res.status(400).json({ error: 'Invalid system prompt' });
-      return;
-    }
-
-    // Sanitize input
-    const sanitizedInput = input.trim();
-    const sanitizedSystemPrompt = systemPrompt.trim();
-
-    if (!sanitizedInput || !sanitizedSystemPrompt) {
-      res.status(400).json({ error: "Missing input or systemPrompt" });
+    // Validate 'messages' array
+    if (!Array.isArray(messages) || messages.length === 0) {
+      res.status(400).json({ error: 'Invalid messages array' });
       return;
     }
 
@@ -62,25 +48,16 @@ exports.generateLinkedInPost = onRequest({
 
     const chatCompletion = await Promise.race([
       openai.chat.completions.create({
-      model: "gpt-4o",
-      temperature: 1.1,
-      messages: [
-        {
-          role: "system",
-          content: systemPrompt
-        },
-        {
-          role: "user",
-          content: input
-        }
-      ],
-      max_tokens: 250,
-      user: req.headers['x-forwarded-for'] || req.ip, // Track requests by IP
-      presence_penalty: 0.6,
-      frequency_penalty: 0.5
-    }),
-    timeoutPromise
-  ]);
+        model: "gpt-4o",
+        temperature: 1.1,
+        messages: messages,
+        max_tokens: 250,
+        user: req.headers['x-forwarded-for'] || req.ip, // Track requests by IP
+        presence_penalty: 0.6,
+        frequency_penalty: 0.5
+      }),
+      timeoutPromise
+    ]);
 
     if (!chatCompletion.choices || chatCompletion.choices.length === 0) {
       res.status(500).json({ error: "No response from OpenAI" });

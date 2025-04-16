@@ -11,18 +11,32 @@ class OpenAIService {
   static const _functionUrl = 'https://generatelinkedinpost-teg6lq3miq-uc.a.run.app';
 
   Future<String> generateLinkedInPost(String input) async {
-    // Trim history if it's too long
+    // Add the user's message to history before sending
+    _conversationHistory.add({'role': 'user', 'content': input});
+
+    // Trim history to the last N messages (maxHistory)
     if (_conversationHistory.length > _maxHistoryMessages) {
       _conversationHistory.removeRange(0, _conversationHistory.length - _maxHistoryMessages);
     }
 
-    // Estimate tokens for the input (topic + system prompt + recent history)
-    final historyText = _conversationHistory.map((msg) => msg['content'] as String).join(' ');
-    final estimatedInputTokens = _tokenLimiter.estimateTokens(_systemPrompt + input + historyText);
-    final maxTokens = 250; // Match maxTokens setting
+    // Build chat history for backend (system + conversation)
+    final List<Map<String, String>> messages = [
+      {'role': 'system', 'content': _systemPrompt},
+      ..._conversationHistory.map((msg) => {
+        'role': msg['role'] as String,
+        'content': msg['content'] as String,
+      }),
+    ];
 
-    // Check if we have enough tokens
+    // Estimate tokens for the input (system prompt + history)
+    final historyText = messages.map((msg) => msg['content']).join(' ');
+    final estimatedInputTokens = _tokenLimiter.estimateTokens(historyText);
+    final maxTokens = 250;
+
+    // Check token limits
     if (!await _tokenLimiter.canUseTokens(estimatedInputTokens + maxTokens)) {
+      // Remove the user's message if not enough tokens
+      _conversationHistory.removeLast();
       throw Exception('Daily token limit reached. Please try again tomorrow.');
     }
 
@@ -30,10 +44,12 @@ class OpenAIService {
       final response = await http.post(
         Uri.parse(_functionUrl),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'input': input, 'systemPrompt': _systemPrompt}),
+        body: jsonEncode({'messages': messages}),
       );
 
       if (response.statusCode != 200) {
+        // Remove the user's message if failed
+        _conversationHistory.removeLast();
         throw Exception('Failed to generate post: ${response.body}');
       }
 
@@ -47,12 +63,20 @@ class OpenAIService {
         usage['completion_tokens'] as int,
       );
 
-      // Add the user's message and AI's response to history
-      _conversationHistory.add({'role': 'user', 'content': input});
+      // Add the assistant's reply to history
       _conversationHistory.add({'role': 'assistant', 'content': responseText});
+
+      // Trim again if needed
+      if (_conversationHistory.length > _maxHistoryMessages) {
+        _conversationHistory.removeRange(0, _conversationHistory.length - _maxHistoryMessages);
+      }
 
       return responseText;
     } catch (e) {
+      // Remove the user's message if exception
+      if (_conversationHistory.isNotEmpty && _conversationHistory.last['role'] == 'user') {
+        _conversationHistory.removeLast();
+      }
       throw Exception('Failed to generate post: ${e.toString()}');
     }
   }
