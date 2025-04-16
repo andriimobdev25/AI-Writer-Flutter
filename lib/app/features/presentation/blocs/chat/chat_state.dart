@@ -1,5 +1,5 @@
+import 'package:ai_linkedin_writer/app/features/chat/domain/entities/message.dart';
 import 'package:equatable/equatable.dart';
-import 'package:linkedin_writer/app/features/chat/domain/entities/message.dart';
 
 enum ChatStatus { initial, loading, success, error }
 

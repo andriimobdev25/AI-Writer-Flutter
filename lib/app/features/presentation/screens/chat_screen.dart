@@ -1,13 +1,13 @@
+import 'package:ai_linkedin_writer/app/core/config/theme.dart';
+import 'package:ai_linkedin_writer/app/features/presentation/blocs/chat/chat_bloc.dart';
+import 'package:ai_linkedin_writer/app/features/presentation/blocs/chat/chat_event.dart';
+import 'package:ai_linkedin_writer/app/features/presentation/blocs/chat/chat_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart' hide ChatState;
-import 'package:linkedin_writer/app/core/config/theme.dart';
-import 'package:linkedin_writer/app/features/presentation/blocs/chat/chat_bloc.dart';
-import 'package:linkedin_writer/app/features/presentation/blocs/chat/chat_event.dart';
-import 'package:linkedin_writer/app/features/presentation/blocs/chat/chat_state.dart';
 
-import '../widgets/token_counter.dart';
+import '../widgets/ai_linkedin_app_bar.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -33,32 +33,11 @@ class _ChatScreenState extends State<ChatScreen> {
     _focusNode.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        leadingWidth: 200,
-        title: const Text('LinkedIn Writer'),
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: Padding(padding: const EdgeInsets.only(left: 10), child: TokenCounter()),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: TextButton(
-                child: Text('New post', style: TextStyle(color: Colors.white)),
-                onPressed: () => context.read<ChatBloc>().add(const ResetChat()),
-              ),
-            ),
-          ),
-        ],
-      ),
+      appBar: const AiLinkedinAppBar(),
       body: BlocConsumer<ChatBloc, ChatState>(
         listener: (context, state) {
           if (state.status == ChatStatus.error && state.errorMessage != null) {
@@ -72,7 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
         },
         builder: (context, state) {
           final messages =
-              state.messages.map((msg) => msg.toChatUiMessage()).toList().reversed.toList();
+              state.messages.map((msg) => (msg).toChatUiMessage()).toList().reversed.toList();
 
           return Column(
             children: [

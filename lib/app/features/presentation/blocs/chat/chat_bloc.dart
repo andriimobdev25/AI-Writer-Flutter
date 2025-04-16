@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:linkedin_writer/app/features/presentation/blocs/chat/chat_event.dart';
-import 'package:linkedin_writer/app/features/presentation/blocs/chat/chat_state.dart';
-import 'package:linkedin_writer/app/features/chat/domain/entities/message.dart';
-import 'package:linkedin_writer/app/core/services/openai_service.dart';
+import 'package:ai_linkedin_writer/app/features/presentation/blocs/chat/chat_event.dart';
+import 'package:ai_linkedin_writer/app/features/presentation/blocs/chat/chat_state.dart';
+import 'package:ai_linkedin_writer/app/features/chat/domain/entities/message.dart';
+import 'package:ai_linkedin_writer/app/core/services/openai_service.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final OpenAIService _openAIService;
