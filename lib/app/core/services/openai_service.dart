@@ -6,7 +6,7 @@ import 'token_usage_limiter.dart';
 
 class OpenAIService {
   final _tokenLimiter = TokenUsageLimiter();
-  static const _maxHistoryMessages = 6; // Keep last 3 exchanges
+  static const _maxHistoryMessages = 4; // Keep last 2 exchanges (user + assistant)
   final List<Map<String, dynamic>> _conversationHistory = [];
   static const _functionUrl = 'https://generatelinkedinpost-teg6lq3miq-uc.a.run.app';
 
