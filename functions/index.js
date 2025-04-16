@@ -48,7 +48,7 @@ exports.generateLinkedInPost = onRequest({
 
     const chatCompletion = await Promise.race([
       openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-4.1",
         temperature: 1.1,
         messages: messages,
         max_tokens: 250,
