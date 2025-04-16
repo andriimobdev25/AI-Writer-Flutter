@@ -1,11 +1,11 @@
 {
-    "name": "linkedin_writer",
-    "short_name": "linkedin_writer",
+    "name": "AI Linkedin Writer",
+    "short_name": "AI Linkedin Writer",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0077B5",
     "theme_color": "#0077B5",
-    "description": "A new Flutter project.",
+    "description": "A Flutter web application that helps users write engaging LinkedIn posts using AI.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

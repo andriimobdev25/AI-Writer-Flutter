@@ -1,11 +1,11 @@
-# LinkedIn Writer
+# AI Linkedin Writer
 
-A Flutter web application that helps users write engaging LinkedIn posts using GPT-4o.
+A Flutter web application that helps users write engaging LinkedIn posts using AI.
 
 ## Features
 
 - 💬 **Chat Interface**: User-friendly chat UI for seamless interaction
-- 🤖 **GPT-4.1 Integration**: Leverages OpenAI's latest language model
+- 🤖 **AI-Powered Writing**: Leverages OpenAI's latest language model
 - 📊 **Token Usage Tracking**: Monitor your API usage
 - 🔒 **Secure API Management**: Firebase Functions for secure API calls
 - 📱 **Responsive Layout**: Works on both desktop and mobile browsers
@@ -36,8 +36,8 @@ For more details, see the [Sentry Flutter docs](https://docs.sentry.io/platforms
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/ISL270/linkedin-post-writer.git
-cd linkedin-writer
+git clone https://github.com/ISL270/ai-linkedin-writer.git
+cd ai-linkedin-writer
 ```
 
 ### 2. Flutter Setup
