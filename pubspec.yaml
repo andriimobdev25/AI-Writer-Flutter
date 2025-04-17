@@ -19,6 +19,8 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   firebase_core: ^3.13.0
   sentry_flutter: ^8.14.1
+  font_awesome_flutter: ^10.7.0
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   sentry_dart_plugin: ^2.4.1
