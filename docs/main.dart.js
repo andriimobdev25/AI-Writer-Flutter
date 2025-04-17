@@ -44873,7 +44873,7 @@ return A.v(A.a3p(q,B.nz),$async$qY)
 case 5:case 3:return A.A(null,r)}})
 return A.B($async$qY,r)},
 N(a){var s=null,r=A.ax(a),q=t.E
-return A.vJ(B.aa,s,A.jq(A.b([A.l4(B.W,A.b([A.aJ4(A.f0("AI Linkedin Writer \u270f\ufe0f",s,s,s,A.j1(s,s,B.j,s,s,s,s,s,s,s,s,22,s,s,B.cB,s,s,!0,s,0.5,s,s,s,s,s,s),B.dB,s,s,s)),new A.dx(B.F6,A.kY(A.b([A.OC(s,s,B.Fo,s,s,new A.a49(this),s,s,s,"View on GitHub"),B.RW,A.OC(s,s,B.Fp,s,s,new A.a4a(this),s,s,s,"View LinkedIn Profile")],q),B.af,B.jR,B.aJ,s),s)],q),B.U,B.bC),new A.dx(B.EV.X(0,new A.aJ(20,0,20,0)),A.kY(A.b([A.aJ4(B.Xo),A.aZX(B.FP,B.Xh,new A.a4b(this,a),A.aEJ(s,s,A.b9(38,B.j.H()>>>16&255,B.j.H()>>>8&255,B.j.H()&255),s,s,s,s,s,s,s,s,s,s,s,new A.dH(A.iA(25),B.r),s,s,s,s))],q),B.af,B.tN,B.aJ,s),s)],q),B.af,B.bz),B.q,r.dy,0,s,s,s,s,s,B.dj)}}
+return A.vJ(B.aa,s,A.jq(A.b([A.l4(B.W,A.b([A.aJ4(A.f0("AI Linkedin Writer \u270f\ufe0f",s,s,s,A.j1(s,s,B.j,s,s,s,s,s,s,s,s,22,s,s,B.cB,s,s,!0,s,0.5,s,s,s,s,s,s),B.dB,s,s,s)),new A.dx(B.F6,A.kY(A.b([A.OC(s,s,B.Fo,s,s,new A.a49(this),s,s,s,"View on GitHub"),B.RW,A.OC(s,s,B.Fp,s,s,new A.a4a(this),s,s,s,"View LinkedIn Profile")],q),B.af,B.jR,B.aJ,s),s)],q),B.U,B.bC),new A.dx(B.EV.X(0,new A.aJ(20,0,20,0)),A.kY(A.b([B.Xo,A.aZX(B.FP,B.Xh,new A.a4b(this,a),A.aEJ(s,s,A.b9(38,B.j.H()>>>16&255,B.j.H()>>>8&255,B.j.H()&255),s,s,s,s,s,s,s,s,s,s,s,new A.dH(A.iA(25),B.r),s,s,s,s))],q),B.af,B.tN,B.aJ,s),s)],q),B.af,B.bz),B.q,r.dy,0,s,s,s,s,s,B.dj)}}
 A.a49.prototype={
 $0(){return this.a.qY("https://github.com/ISL270/ai-linkedin-writer")},
 $S:0}
@@ -44886,7 +44886,7 @@ this.a.c.$0()},
 $S:0}
 A.TV.prototype={
 N(a){var s=null,r=A.b9(38,B.j.H()>>>16&255,B.j.H()>>>8&255,B.j.H()&255),q=A.iA(16)
-return A.kY(A.b([A.d2(s,A.aHA(s,s,new A.apl(),t.Es,t.cp),B.q,s,s,new A.dA(r,s,s,q,s,s,B.av),s,s,s,B.EX,s,s,s)],t.E),B.af,B.tM,B.bz,s)}}
+return A.aJ4(A.kY(A.b([A.d2(s,A.aHA(s,s,new A.apl(),t.Es,t.cp),B.q,s,s,new A.dA(r,s,s,q,s,s,B.av),s,s,s,B.EX,s,s,s)],t.E),B.af,B.tM,B.bz,s))}}
 A.apl.prototype={
 $2(a,b){var s=null,r=b.d
 return A.f0(A.a3y(B.e.j(r==null?0:r),A.aV("\\B(?=(\\d{3})+(?!\\d))",!0,!1,!1,!1),new A.apk(),s)+" tokens remaining today",s,s,s,B.Ub,s,s,s,s)},
