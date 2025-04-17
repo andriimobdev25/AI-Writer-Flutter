@@ -7,8 +7,8 @@ import '../blocs/chat/chat_bloc.dart';
 import '../blocs/chat/chat_event.dart';
 import '../widgets/token_counter.dart';
 
-const String kGithubRepoUrl = 'https://github.com/ISL270/ai-linkedin-writer';
-const String kLinkedinProfileUrl = 'https://www.linkedin.com/in/eslam-se';
+const String _kGithubRepoUrl = 'https://github.com/ISL270/ai-linkedin-writer';
+const String _kLinkedinProfileUrl = 'https://www.linkedin.com/in/eslam-se';
 
 class AiLinkedinAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onNewPost;
@@ -31,14 +31,16 @@ class AiLinkedinAppBar extends StatelessWidget implements PreferredSizeWidget {
           Stack(
             alignment: Alignment.center,
             children: [
-              Text(
-                'AI Linkedin Writer ✏️',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                  letterSpacing: 0.5,
+              FittedBox(
+                child: Text(
+                  'AI Linkedin Writer ✏️',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                    letterSpacing: 0.5,
+                  ),
                 ),
               ),
               Padding(
@@ -49,14 +51,14 @@ class AiLinkedinAppBar extends StatelessWidget implements PreferredSizeWidget {
                     IconButton(
                       icon: const FaIcon(FontAwesomeIcons.github, color: Colors.white),
                       tooltip: 'View on GitHub',
-                      onPressed: () => _launchExternalUrl(kGithubRepoUrl),
+                      onPressed: () => _launchExternalUrl(_kGithubRepoUrl),
                     ),
                     const SizedBox(width: 2),
 
                     IconButton(
                       icon: const FaIcon(FontAwesomeIcons.linkedin, color: Colors.white),
                       tooltip: 'View LinkedIn Profile',
-                      onPressed: () => _launchExternalUrl(kLinkedinProfileUrl),
+                      onPressed: () => _launchExternalUrl(_kLinkedinProfileUrl),
                     ),
                   ],
                 ),
