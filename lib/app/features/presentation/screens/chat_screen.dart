@@ -3,6 +3,7 @@ import 'package:ai_linkedin_writer/app/features/presentation/blocs/chat/chat_blo
 import 'package:ai_linkedin_writer/app/features/presentation/blocs/chat/chat_event.dart';
 import 'package:ai_linkedin_writer/app/features/presentation/blocs/chat/chat_state.dart';
 import 'package:flutter/material.dart';
+import 'package:ai_linkedin_writer/app/widgets/typing_indicator.dart' as app_widgets;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart' hide ChatState;
@@ -55,7 +56,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
           return Column(
             children: [
-              if (state.status == ChatStatus.loading) const LinearProgressIndicator(),
               Expanded(
                 child: Chat(
                   messages: messages,
@@ -72,7 +72,13 @@ class _ChatScreenState extends State<ChatScreen> {
                     receivedMessageBodyTextStyle: const TextStyle(color: Colors.black87),
                     inputTextStyle: const TextStyle(color: Colors.black87),
                   ),
-                  customBottomWidget: ChatInputField(focusNode: _focusNode),
+                  customBottomWidget: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      app_widgets.TypingIndicator(showIndicator: state.status == ChatStatus.loading),
+                      ChatInputField(focusNode: _focusNode),
+                    ],
+                  ),
                 ),
               ),
             ],
