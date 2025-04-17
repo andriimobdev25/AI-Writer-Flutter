@@ -11,7 +11,8 @@ const String kGithubRepoUrl = 'https://github.com/ISL270/ai-linkedin-writer';
 const String kLinkedinProfileUrl = 'https://www.linkedin.com/in/eslam-se';
 
 class AiLinkedinAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const AiLinkedinAppBar({super.key});
+  final VoidCallback onNewPost;
+  const AiLinkedinAppBar({super.key, required this.onNewPost});
 
   Future<void> _launchExternalUrl(String url) async {
     final uri = Uri.parse(url);
@@ -76,7 +77,10 @@ class AiLinkedinAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   icon: const Icon(Icons.add, color: Colors.white),
                   label: const Text('New Post', style: TextStyle(color: Colors.white)),
-                  onPressed: () => context.read<ChatBloc>().add(const ResetChat()),
+                  onPressed: () {
+                    context.read<ChatBloc>().add(const ResetChat());
+                    onNewPost();
+                  },
                 ),
               ],
             ),

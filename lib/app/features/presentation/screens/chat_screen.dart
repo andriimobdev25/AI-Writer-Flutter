@@ -2,8 +2,8 @@ import 'package:ai_linkedin_writer/app/core/config/theme.dart';
 import 'package:ai_linkedin_writer/app/features/presentation/blocs/chat/chat_bloc.dart';
 import 'package:ai_linkedin_writer/app/features/presentation/blocs/chat/chat_event.dart';
 import 'package:ai_linkedin_writer/app/features/presentation/blocs/chat/chat_state.dart';
-import 'package:flutter/material.dart';
 import 'package:ai_linkedin_writer/app/widgets/typing_indicator.dart' as app_widgets;
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart' hide ChatState;
@@ -38,7 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AiLinkedinAppBar(),
+      appBar: AiLinkedinAppBar(onNewPost: _focusNode.requestFocus),
       body: BlocConsumer<ChatBloc, ChatState>(
         listener: (context, state) {
           if (state.status == ChatStatus.error && state.errorMessage != null) {
@@ -75,8 +75,13 @@ class _ChatScreenState extends State<ChatScreen> {
                   customBottomWidget: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      app_widgets.TypingIndicator(showIndicator: state.status == ChatStatus.loading),
-                      ChatInputField(focusNode: _focusNode),
+                      app_widgets.TypingIndicator(
+                        showIndicator: state.status == ChatStatus.loading,
+                      ),
+                      ChatInputField(
+                        focusNode: _focusNode,
+                        isChatEmpty: state.messages.isEmpty,
+                      ),
                     ],
                   ),
                 ),
@@ -91,7 +96,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
 class ChatInputField extends StatefulWidget {
   final FocusNode focusNode;
-  const ChatInputField({super.key, required this.focusNode});
+  final bool isChatEmpty;
+  const ChatInputField({super.key, required this.focusNode, required this.isChatEmpty});
 
   @override
   State<ChatInputField> createState() => _ChatInputFieldState();
@@ -133,7 +139,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
               focusNode: widget.focusNode,
               controller: _textController,
               decoration: InputDecoration(
-                hintText: 'What would you like to post about?',
+                hintText: widget.isChatEmpty ? 'What would you like to post about?' : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
                   borderSide: BorderSide.none,

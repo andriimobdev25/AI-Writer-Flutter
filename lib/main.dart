@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'LinkedIn Writer',
+      title: 'AI Linkedin Writer',
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
       home: BlocProvider(

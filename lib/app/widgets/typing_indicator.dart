@@ -277,8 +277,8 @@ class FlashingCircle extends StatelessWidget {
         final circleColorPercent = sin(pi * circleFlashPercent);
 
         return Container(
-          width: 10,
-          height: 10,
+          width: 10.5,
+          height: 10.5,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Color.lerp(
