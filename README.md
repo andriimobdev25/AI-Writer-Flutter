@@ -132,6 +132,13 @@ flutter build web
 flutter run -d chrome
 ```
 
+## Security Notes
+
+- **Never commit secrets or API keys** (e.g., `.env`, API keys, Firebase credentials) to version control.
+- Sensitive files like `.env` and `firebase_options.dart` are listed in [.gitignore](./.gitignore).
+- Use environment variables for all sensitive data and configuration.
+- If you accidentally commit a secret, rotate it immediately and remove it from your git history.
+
 ## Project Structure
 
 ```
@@ -149,13 +156,6 @@ lib/
 │   │   │   └── presentation/ # UI layer
 │   └── widgets/         # Shared widgets
 ```
-
-## Security Notes
-
-- **Never commit secrets or API keys** (e.g., `.env`, API keys, Firebase credentials) to version control.
-- Sensitive files like `.env` and `firebase_options.dart` are listed in [.gitignore](./.gitignore).
-- Use environment variables for all sensitive data and configuration.
-- If you accidentally commit a secret, rotate it immediately and remove it from your git history.
 
 ## Contributing
 

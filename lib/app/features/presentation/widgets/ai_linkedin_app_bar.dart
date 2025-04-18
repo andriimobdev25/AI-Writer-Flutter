@@ -55,7 +55,6 @@ class AiLinkedinAppBar extends StatelessWidget implements PreferredSizeWidget {
                       onPressed: () => _launchExternalUrl(_kGithubRepoUrl),
                     ),
                     const SizedBox(width: 2),
-
                     IconButton(
                       icon: const FaIcon(FontAwesomeIcons.linkedin, color: Colors.white),
                       tooltip: 'View LinkedIn Profile',
@@ -67,9 +66,12 @@ class AiLinkedinAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           Padding(
-            padding:
-                const EdgeInsets.only(bottom: 15, top: 4) +
-                EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).size.width * 0.03,
+              top: MediaQuery.of(context).size.width * 0.008,
+              left: MediaQuery.of(context).size.width * 0.04,
+              right: MediaQuery.of(context).size.width * 0.04,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
