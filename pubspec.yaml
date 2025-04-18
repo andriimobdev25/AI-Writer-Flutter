@@ -37,4 +37,4 @@ sentry:
   upload_debug_symbols: true
   upload_source_maps: true
   project: flutter
-  org: eslam-oj
+  org: andrii-oj
