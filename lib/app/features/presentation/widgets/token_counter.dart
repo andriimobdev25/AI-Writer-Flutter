@@ -5,8 +5,7 @@ import '../blocs/chat/chat_bloc.dart';
 import '../blocs/chat/chat_state.dart';
 
 class TokenCounter extends StatelessWidget {
-  final double? fontSize;
-  const TokenCounter({super.key, this.fontSize});
+  const TokenCounter({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +23,9 @@ class TokenCounter extends StatelessWidget {
             builder: (context, state) {
               return Text(
                 '${(state.remainingTokens ?? 0).toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => ',')} tokens remaining today',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
-                  fontSize: fontSize ?? 14.0,
+                  fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
               );
