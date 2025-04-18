@@ -8,6 +8,7 @@ A Flutter web application that helps users write engaging LinkedIn posts using A
 - 📊 **Token Usage Tracking**: Monitor your API usage
 - 🔒 **Secure API Management**: Firebase Functions for secure API calls
 - 📱 **Responsive Layout**: Works on both desktop and mobile browsers
+- 🛡️ **Error Monitoring**: Integrated with Sentry for real-time error tracking in production
 
 ## 🚀 Demo
 
