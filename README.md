@@ -1,9 +1,4 @@
 # AI Linkedin Writer
-
-[![Build Status](https://github.com/ISL270/ai-linkedin-writer/actions/workflows/build.yml/badge.svg)](https://github.com/ISL270/ai-linkedin-writer/actions)
-[![GitHub Pages](https://img.shields.io/badge/deploy-GitHub%20Pages-blue)](https://isl270.github.io/ai-linkedin-writer/)
-[![MIT License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-
 A Flutter web application that helps users write engaging LinkedIn posts using AI.
 
 ## Features
