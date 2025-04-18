@@ -88,6 +88,22 @@ After deploying, you'll receive a Function URL. Update this URL in:
 
 Replace the `_functionUrl` value with your new function URL.
 
+## Deploying to GitHub Pages
+
+To deploy your application to GitHub Pages, follow these steps:
+
+1. Create a new branch for your deployment.
+2. Run the following command to build your web application:
+```bash
+flutter build web
+```
+3. Create a new folder in your repository's root directory called `docs`.
+4. Move the contents of the `build/web` directory to the `docs` directory.
+5. Commit your changes and push them to your repository.
+6. Go to your repository's settings and select "Pages" from the left-hand menu.
+7. Select the branch you created earlier and the `/docs` folder as the source.
+8. Click "Save" to deploy your application to GitHub Pages.
+
 ## Running the Application
 
 ```bash
