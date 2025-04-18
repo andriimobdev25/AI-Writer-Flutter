@@ -28,24 +28,25 @@ class AiLinkedinAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              FittedBox(
-                child: Text(
-                  'AI Linkedin Writer ✏️',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22,
-                    letterSpacing: 0.5,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06),
+            child: Stack(
+              alignment:
+                  MediaQuery.of(context).size.width > 440 ? Alignment.center : Alignment.centerLeft,
+              children: [
+                FittedBox(
+                  child: Text(
+                    'AI Linkedin Writer ✏️',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      letterSpacing: 0.5,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 35),
-                child: Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(
@@ -62,27 +63,33 @@ class AiLinkedinAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Padding(
             padding:
-                const EdgeInsets.only(bottom: 15, top: 4) + EdgeInsets.symmetric(horizontal: 20),
+                const EdgeInsets.only(bottom: 15, top: 4) +
+                EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const TokenCounter(),
-                TextButton.icon(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.white.withOpacity(0.15),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                Flexible(flex: 2, child: FittedBox(child: const TokenCounter())),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                Flexible(
+                  child: FittedBox(
+                    child: TextButton.icon(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.white.withOpacity(0.15),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                      ),
+                      icon: const Icon(Icons.add, color: Colors.white),
+                      label: const Text('New Post', style: TextStyle(color: Colors.white)),
+                      onPressed: () {
+                        context.read<ChatBloc>().add(const ResetChat());
+                        onNewPost();
+                      },
+                    ),
                   ),
-                  icon: const Icon(Icons.add, color: Colors.white),
-                  label: const Text('New Post', style: TextStyle(color: Colors.white)),
-                  onPressed: () {
-                    context.read<ChatBloc>().add(const ResetChat());
-                    onNewPost();
-                  },
                 ),
               ],
             ),
